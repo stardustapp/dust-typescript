@@ -25,6 +25,10 @@ export class BlobEntry {
     return blobFetch.blob();
   }
 
+  asBytes(): Uint8Array {
+    return Base64.toUint8Array(this.Data);
+  }
+
   inspect() {
     return `<Blob ${JSON.stringify(this.Name)} ${JSON.stringify(this.Mime)}>`;
   }

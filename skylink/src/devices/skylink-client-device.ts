@@ -95,7 +95,7 @@ export class SkylinkClientEntry implements SkyEntry {
     } : {
       Op: 'store',
       Dest: this.path,
-      Input: DeflateToSkylinkLiteral(value),
+      Input: value,
     }).then(x => undefined);
   }
 
@@ -103,7 +103,7 @@ export class SkylinkClientEntry implements SkyEntry {
     return this.remote.performOp({
       Op: 'invoke',
       Path: this.path,
-      Input: input ? DeflateToSkylinkLiteral(input) : undefined,
+      Input: input ?? undefined,
     }).then(x => x ?? null);
   }
 

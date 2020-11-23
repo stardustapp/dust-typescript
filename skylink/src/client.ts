@@ -31,7 +31,7 @@ export interface SkylinkClient {
   volley(request: WireRequest): Promise<SkyResponse>;
 
   /** Like volley(), except it checks the response and returns Output directly */
-  performOp(request: WireRequest): Promise<Entry | undefined>;
+  performOp(request: SkyRequest): Promise<Entry | undefined>;
 
   /** Called and implmeneted internally by stream-based implementations */
   processFrame(frame: SkyResponse): void;
@@ -82,14 +82,18 @@ export class SkylinkClientBase implements SkylinkClient {
   }
 
   // Like volley(), except it checks the response and returns Output directly
-  async performOp(request: WireRequest): Promise<Entry | undefined> {
-    const response = await this.volley(request);
+  async performOp(request: SkyRequest): Promise<Entry | undefined> {
+    const wireReq = {
+      ...request,
+      Input: request.Input ? DeflateToSkylinkLiteral(request.Input, this.extraDeflaters) : undefined,
+    };
+    const response = await this.volley(wireReq);
     switch (response.Ok) {
       case true:
         return response.Output;
       case false:
         const failErr = new Error(this
-          .makeRejectionMessage(request, response.Output));
+          .makeRejectionMessage(wireReq, response.Output));
         (failErr as any).response = response;
         return Promise.reject(failErr);
       default:
