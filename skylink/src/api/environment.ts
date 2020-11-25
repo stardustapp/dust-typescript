@@ -107,7 +107,7 @@ export class Environment {
     return {};
   }
 
-  async getEntry(path: string, required?: boolean, apiCheck?: string): Promise<SkyEntry|undefined> {
+  async getEntry(path: string, required?: boolean, apiCheck?: string): Promise<SkyEntry|null> {
     if (path === '/') path = '';
 
     var entry;
@@ -128,7 +128,7 @@ export class Environment {
     if (apiCheck && entry != null && (entry as Record<string,unknown>)[apiCheck] == null) throw new Error(
       `getEntry(${JSON.stringify(path)}) found a ${entry.constructor.name} which doesn't present desired API ${apiCheck}`);
 
-    return entry ?? undefined;
+    return entry ?? null;
   }
 
   [Symbol.for("nodejs.util.inspect.custom")]() {
@@ -177,6 +177,7 @@ export class ChildEnvironment extends Environment {
 
     if (required) throw new Error(
       `ChildEnvironment getEntry() didn't find anything for requirement ${path} even with ${this.parentEnvs.length} parent envs`);
+    return null;
   }
 }
 
