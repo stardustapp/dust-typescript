@@ -4,15 +4,6 @@ const [client, path] = interpretUrl(Deno.args[1] ?? '/');
 
 switch (Deno.args[0]) {
 
-  case 'cli': {
-    let line: string | null;
-    while ((line = prompt(`>`)) != 'q') {
-      console.log(JSON.stringify(line));
-    }
-    console.log('done', JSON.stringify(line));
-    break;
-  }
-
   case 'get': {
     const entry = await client.performOp({
       Op: 'get',
