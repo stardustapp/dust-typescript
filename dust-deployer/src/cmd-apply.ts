@@ -131,6 +131,14 @@ async function handler(argv: {
       console.log('!-> WARN: App', app.id, 'lacks a static HTML bundle');
     }
 
+    if (project.deploymentConfig.configure_skylink) {
+      console.log('    Configuring Skylink clients...');
+      await runner.execUtility('ambr', ['--no-interactive',
+        '//CONFIGURE SKYLINK//',
+        project.deploymentConfig.configure_skylink,
+        targetDir]);
+    }
+
     // js libraries
     const libDir = join(targetDir, '~~', 'lib');
     console.log(`--> Copying hosted libraries`);

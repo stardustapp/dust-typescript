@@ -2,6 +2,7 @@ export interface DustDeployment {
   authority:          DeploymentAuthority;
   backend_deployment: DeploymentBackend;
   apps?:              DeploymentApp[];
+  configure_skylink?: string;
 }
 
 export interface DeploymentApp {
