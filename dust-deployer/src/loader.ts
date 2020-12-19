@@ -49,8 +49,8 @@ export class Project {
             return false;
           }, err => {
             // return lib config when not found in cache
-            // TODO: not node...
-            if (err.code === 'ENOENT') return lib;
+            if (err.code === 'ENOENT') return lib; // Node
+            if (err.name === 'NotFound') return lib; // Deno
             throw err;
           }))))
       .filter(x => x);
@@ -74,7 +74,7 @@ export class Project {
       await runner.execUtility(`mkdir`, [`-p`, libTarget]);
       this.libraryDirs.set(lib, libTarget);
 
-      const tgzName = packProc.stdout;
+      const tgzName = packProc.stdout.trim();
       await runner.execUtility('tar', [
         '-xf', tgzName,
         '-C', libTarget,
