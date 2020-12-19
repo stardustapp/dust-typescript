@@ -209,7 +209,7 @@ async function* combine<T>(iterable: Iterable<AsyncIterableIterator<T>>) {
   const asyncIterators = Array.from(iterable, o => o[Symbol.asyncIterator]());
   const results = [];
   let count = asyncIterators.length;
-  let complete: (() => void) | undefined;
+  let complete: ((val: {index:number,result:IteratorResult<T,any>}) => void) | undefined;
   const never = new Promise<{index:number,result:IteratorResult<T,any>}>(ok => {complete = ok});
   function getNext(asyncIterator: AsyncIterator<T>, index: number) {
       return asyncIterator.next().then(result => ({
@@ -222,7 +222,7 @@ async function* combine<T>(iterable: Iterable<AsyncIterableIterator<T>>) {
       while (count) {
           const {index, result} = await Promise.race(nextPromises);
           if (result.done) {
-              nextPromises[index] = never as Promise<any>;
+              nextPromises[index] = never;
               results[index] = result.value;
               count--;
           } else {
@@ -234,7 +234,7 @@ async function* combine<T>(iterable: Iterable<AsyncIterableIterator<T>>) {
       for (const [index, iterator] of asyncIterators.entries())
           if (nextPromises[index] != never && iterator.return != null)
               iterator.return();
-      if (complete) complete();
+      if (complete) complete({index: -1, result: {value: undefined, done: true}});
       // no await here - see https://github.com/tc39/proposal-async-iteration/issues/126
   }
   return results;
