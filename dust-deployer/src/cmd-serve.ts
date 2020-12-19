@@ -6,6 +6,7 @@ import { Loader } from './loader.ts';
 import { disregardSignals, ServiceRunner } from './runner.ts';
 
 const DUSTJS_DEPLOYMENTS_DIR = Deno.env.get('DUSTJS_DEPLOYMENTS_DIR');
+const DUSTJS_CHECKOUT_DIR = Deno.env.get('DUSTJS_CHECKOUT_DIR');
 const DUSTJS_APPS_PATH = Deno.env.get('DUSTJS_APPS_PATH');
 
 export async function cmdServe(args: string[]) {
@@ -21,7 +22,7 @@ export async function cmdServe(args: string[]) {
       'send-notifs': false,
       'only': 'firebase,backend',
       'deployments-dir': DUSTJS_DEPLOYMENTS_DIR,
-      'dustjs-path': '/home/dan/Code/@stardustapp/dustjs',
+      'dustjs-path': DUSTJS_CHECKOUT_DIR,
       'apps-path': DUSTJS_APPS_PATH,
     },
   });
@@ -210,7 +211,9 @@ async function handler(argv: {
 
     console.log(`==> Starting Firebase Hosting...`);
     const fireServe = runner.launchBackgroundProcess('firebase', {
-      args: ['serve', '--only', 'hosting'],
+      args: ['serve', '--only', 'hosting',
+        ...Deno.env.get('FIREBASE_SERVE_ARGS')?.split(' ') || [],
+      ],
       cwd: join(Deno.cwd(), 'firebase'),
     });
 
