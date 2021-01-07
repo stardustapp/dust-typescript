@@ -7,12 +7,12 @@ const [mode, ...args] = Deno.args;
 switch (mode) {
 
   case 'apply': {
-    await cmdApply(args);
+    await cmdApply(args).catch(showError);
     break;
   };
 
   case 'serve': {
-    await cmdServe(args);
+    await cmdServe(args).catch(showError);
     break;
   };
 
@@ -23,4 +23,10 @@ switch (mode) {
     // TODO: more
     Deno.exit(6);
   };
+}
+
+function showError(error: unknown) {
+  console.log('!!! Fatal error occurred!\n');
+  console.log((error as Error).stack);
+  Deno.exit(2);
 }
