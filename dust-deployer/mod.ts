@@ -1,4 +1,4 @@
-// import * as flags from "https://deno.land/std@0.78.0/flags/mod.ts";
+// import * as flags from "https://deno.land/std@0.83.0/flags/mod.ts";
 
 import { cmdApply } from './src/cmd-apply.ts';
 import { cmdServe } from './src/cmd-serve.ts';

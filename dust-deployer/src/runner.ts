@@ -1,4 +1,4 @@
-import * as clr from 'https://deno.land/std@0.78.0/fmt/colors.ts';
+import * as clr from 'https://deno.land/std@0.83.0/fmt/colors.ts';
 
 const KnownDirs = new Array<[string,string]>();
 
@@ -178,9 +178,8 @@ export class ServiceRunner {
 }
 
 import {
-  ReadLineTransformer, readableStreamFromReaderCloser,
-} from 'https://deno.land/x/kubernetes_client@v0.1.0/stream-transformers.ts';
-import { readableStreamFromAsyncIterator } from "https://raw.githubusercontent.com/danopia/deno-kubernetes_client/fecd8ed2a868390cf500d7147c0940314c5042aa/stream-transformers.ts";
+  ReadLineTransformer, readableStreamFromAsyncIterator,
+} from 'https://deno.land/x/kubernetes_client@v0.1.3/stream-transformers.ts';
 
 class ChildProcess {
   proc: Deno.Process<Deno.RunOptions & {stdout: 'piped', stderr: 'piped'}>;
