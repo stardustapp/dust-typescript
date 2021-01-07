@@ -116,9 +116,18 @@ export class Loader {
 
   async loadProjectConfig(argv: {appsPath: string; deploymentsDir: string}) {
     console.log('==> Loading deployment configuration...');
-    const projectConfig = YAML.parse(await Deno.readTextFile(join(this.workdir, 'dust-project.yaml'))) as DustProject;
+    const projectData = await Deno.readTextFile(join(this.workdir, 'dust-project.yaml'))
+      .catch(err => {
+        if (err.name !== 'NotFound') throw err;
+        throw new Error(`dust-project.yaml file not found in work directory`);
+      })
+    const projectConfig = YAML.parse(projectData) as DustProject;
 
-    const rcData = await Deno.readTextFile(join(this.workdir, 'firebase', '.firebaserc'));
+    const rcData = await Deno.readTextFile(join(this.workdir, 'firebase', '.firebaserc'))
+      .catch(err => {
+        if (err.name !== 'NotFound') throw err;
+        throw new Error(`firebase/.firebaserc file not found in work directory`);
+      });
     const firebaseRc = JSON.parse(rcData) as {projects: {default: string}};
     const firebaseProject = firebaseRc.projects.default;
     // console.log(firebaseRc);
