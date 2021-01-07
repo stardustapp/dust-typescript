@@ -8,6 +8,7 @@ import { disregardSignals, ServiceRunner } from './runner.ts';
 import { generateDeploymentPatch, generateIngress, KubernetesClient } from './kubernetes.ts';
 
 const DUSTJS_DEPLOYMENTS_DIR = Deno.env.get('DUSTJS_DEPLOYMENTS_DIR');
+const DUSTJS_CHECKOUT_DIR = Deno.env.get('DUSTJS_CHECKOUT_DIR');
 const DUSTJS_APPS_PATH = Deno.env.get('DUSTJS_APPS_PATH');
 
 export async function cmdApply(args: string[]) {
@@ -23,7 +24,7 @@ export async function cmdApply(args: string[]) {
       'only': 'firebase,backend,services',
       'backend-image-tag': 'latest',
       'deployments-dir': DUSTJS_DEPLOYMENTS_DIR,
-      'dustjs-path': '/home/dan/Code/@stardustapp/dustjs',
+      'dustjs-path': DUSTJS_CHECKOUT_DIR,
       'apps-path': DUSTJS_APPS_PATH,
     },
   });
