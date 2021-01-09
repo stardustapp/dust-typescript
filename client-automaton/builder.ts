@@ -15,7 +15,7 @@ export class Automaton<T extends AutomatonRuntime> {
   publishRuntimeEnvironment(serviceName: string) {
     if (!this.runtime.env) throw new Error(`No runtime environment found to publish`);
     return this.apiSession.wsDevice
-      .getEntry('/pub/publish%20service/invoke')
+      .getEntry('/publish%20service/invoke')
       .invoke(
         new FolderEntry('Publication', [
           new StringEntry('Session ID', this.apiSession.sessionId),
