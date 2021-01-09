@@ -126,7 +126,7 @@ export class Loader {
     const rcData = await Deno.readTextFile(join(this.workdir, 'firebase', '.firebaserc'))
       .catch(err => {
         if (err.name !== 'NotFound') throw err;
-        throw new Error(`firebase/.firebaserc file not found in work directory`);
+        throw new Error(`${join('firebase', '.firebaserc')} file not found in work directory`);
       });
     const firebaseRc = JSON.parse(rcData) as {projects: {default: string}};
     const firebaseProject = firebaseRc.projects.default;
@@ -135,7 +135,12 @@ export class Loader {
     const appsDirs = argv.appsPath.split(':');
 
     const deploymentDir = join(argv.deploymentsDir, firebaseProject);
-    const deploymentConfig = YAML.parse(await Deno.readTextFile(join(deploymentDir, 'config.yaml'))) as DustDeployment;
+    const deploymentData = await Deno.readTextFile(join(deploymentDir, 'config.yaml'))
+      .catch(err => {
+        if (err.name !== 'NotFound') throw err;
+        throw new Error(`${join(firebaseProject, 'config.yaml')} file not found in your deployments directory`);
+      });
+    const deploymentConfig = YAML.parse(deploymentData) as DustDeployment;
     // console.log(deploymentConfig);
 
     console.log('--> Discovering applications...');
