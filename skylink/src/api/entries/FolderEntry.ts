@@ -27,6 +27,22 @@ export class FolderEntry {
     return child;
   }
 
+  getStringChild(name: string, required?: boolean) {
+    const entry = this.getChild(name, required, 'String');
+    if (entry?.Type === 'String') {
+      return entry.StringValue ?? '';
+    }
+    return '';
+  }
+
+  toDictionary<T>(valMapper: (value: Entry) => T) {
+    const dict: Record<string,T> = Object.create(null);
+    for (const item of this.Children) {
+      dict[item.Name] = valMapper(item);
+    }
+    return dict;
+  }
+
   // inspect() {
   //   const childStr = this.Children.map(x => x ? (x.inspect ? x.inspect() : `${x.constructor.name} "${x.Name}"`) : `BUG:NULL`).join(', ');
   //   return `<Folder ${JSON.stringify(this.Name)} [${childStr}]>`;
