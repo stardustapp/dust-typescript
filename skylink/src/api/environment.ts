@@ -109,6 +109,7 @@ export class Environment {
 
   async getEntry(path: string, required?: boolean, apiCheck?: string): Promise<SkyEntry|null> {
     if (path === '/') path = '';
+    path = path.replace(/ /g, '%20'); // TODO: better handling of this
 
     var entry;
     const {mount, subPath} = this.matchPath(path);
