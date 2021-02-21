@@ -195,7 +195,8 @@ class ChildProcess {
     return readableStreamFromAsyncIterator(combine([
       Deno.iter(this.proc.stderr, {bufSize: 1024}),
       Deno.iter(this.proc.stdout, {bufSize: 1024}),
-    ])).pipeThrough(new ReadLineTransformer('utf-8'));
+    ]), this.cancel.bind(this))
+      .pipeThrough(new ReadLineTransformer('utf-8'));
   }
   async stdout() {
     return new TextDecoder('utf-8').decode(await this.proc.output());
