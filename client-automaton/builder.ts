@@ -8,9 +8,11 @@ export class Automaton<T extends AutomatonRuntime> {
   constructor(
     public apiSession: ApiSession,
     public userEnv: Environment,
-  ) {}
+  ) {
+    this.envServer = new SkylinkServer(userEnv);
+  }
   runtime!: T;
-  envServer = new SkylinkServer(this.userEnv);
+  envServer: SkylinkServer;
 
   publishRuntimeEnvironment(serviceName: string) {
     if (!this.runtime.env) throw new Error(`No runtime environment found to publish`);

@@ -111,7 +111,7 @@ export class Channel<Tnext=Entry> {
   }
 
   // You give a main callback, and two different finishers
-  forEach(effect: (x: Tnext) => void, errorFinisher: (x?: Entry) => void, doneFinisher: (x?: Entry) => void) {
+  forEach(effect: (x: Tnext) => void, errorFinisher?: (x?: Entry) => void, doneFinisher?: (x?: Entry) => void) {
     if (!errorFinisher) {
       errorFinisher = (pkt) => {
         console.warn('Channel #', this.id, "encountered an Error,",
@@ -129,10 +129,10 @@ export class Channel<Tnext=Entry> {
         if (x.Output) effect(x.Output);
       },
       onError(x) {
-        errorFinisher(x.Output);
+        errorFinisher!(x.Output);
       },
       onDone(x) {
-        doneFinisher(x.Output);
+        doneFinisher!(x.Output);
       },
     });
     return new Channel('void');

@@ -1,4 +1,4 @@
-import { Entry, NilEntry } from "./index.ts";
+import { Entry, NilEntry, StringEntry } from "./index.ts";
 
 export class FolderEntry {
   Type = "Folder" as const;
@@ -16,6 +16,11 @@ export class FolderEntry {
   }
 
   // Helper to fetch one direct descendant, with optional useful checking
+  getChild(name: string, required: true, typeCheck: 'String'): StringEntry;
+  getChild(name: string, required: boolean, typeCheck: 'String'): StringEntry | undefined;
+  getChild(name: string, required: true, typeCheck: 'Folder'): FolderEntry;
+  getChild(name: string, required: boolean, typeCheck: 'Folder'): FolderEntry | undefined;
+  getChild(name: string, required?: boolean, typeCheck?: string): Entry | undefined;
   getChild(name: string, required?: boolean, typeCheck?: string) {
     const child = this.Children.find(x => x.Name === name);
     if (required && (!child || !child.Type)) {
