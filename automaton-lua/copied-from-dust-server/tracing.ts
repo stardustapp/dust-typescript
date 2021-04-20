@@ -23,7 +23,7 @@ export class TraceContext {
     const traceName = `${trace.eventLog[0][3].name}`;
 
     // TODO: trace.originalStack has line number
-    console.log(`${trace.id}\tTRACE\t${millisDelta}ms\t${traceName}`);
+    // console.log(`${trace.id}\tTRACE\t${millisDelta}ms\t${traceName}`);
     // for (const [time, id, type, data] of trace.eventLog.slice(1, -1)) {
     //   console.log(`${id}\t${time-baseTime}ms\t${type}\t${JSON.stringify(data)}`);
     // }

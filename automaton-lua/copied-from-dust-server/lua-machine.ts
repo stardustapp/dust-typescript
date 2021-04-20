@@ -102,9 +102,9 @@ export class LuaContext implements api.LuaContext {
       case 'String':
         lua.lua_pushliteral(L, entry.StringValue || '');
         break;
-      // case 'Unknown':
-      //   lua.lua_pushnil(L);
-      //   break;
+      case 'Unknown' as unknown as undefined: // TODO: this really shouldn't be on the wire
+        lua.lua_pushnil(L);
+        break;
       default:
         lauxlib.luaL_error(L, `Directory entry ${entry.Name} wasn't a recognizable type ${entry.Type}`);
         throw new Error("unreachable");
