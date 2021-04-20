@@ -16,7 +16,7 @@ import {
 } from '../../skylink/src/mod.ts';
 
 import { mkdirp } from './mkdirp.ts';
-import * as pollable from '../pollable-devices.ts';
+import * as pollable from './pollable-devices.ts';
 import Datadog from './datadog.ts';
 import {CallTrace} from './tracing.ts';
 import { SkyDevice, SkyEntry } from "../../skylink/src/types.ts";
@@ -294,7 +294,7 @@ export const LUA_API: Record<string, (this: LuaThread, L: L, T: T) => Promise<nu
 
     // read all remaining args as a path
     const {device, path} = this.resolveLuaPath(T);
-    console.debug("invoke of", path, 'from', path, 'with input', inputLit);
+    console.debug("invoke of", path, 'from', path, 'with input', JSON.stringify(inputLit));
     T.startStep({name: 'lookup function entry'});
     const entry = await device.getEntry(path + '/invoke');
     T.endStep();
@@ -428,7 +428,7 @@ export const LUA_API: Record<string, (this: LuaThread, L: L, T: T) => Promise<nu
     const dT = (Date.now() - d0) / 1000;
 
     const readyNames = readyFolder.Children.map((x: Entry) => x.Name);
-    console.log('lua poll got back', readyNames, 'after', dT, 'seconds');
+    // console.log('lua poll got back', readyNames, 'after', dT, 'seconds');
     Datadog.gauge('lua.poll_seconds', dT, {
       poll_ready: readyNames.join(':') || 'none',
     });

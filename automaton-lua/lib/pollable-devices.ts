@@ -4,8 +4,8 @@ import {
   InflateSkylinkLiteral,
   LiteralDevice,
   Entry,
-} from '../skylink/src/mod.ts';
-import { SkyDevice, SkyEntry } from "../skylink/src/types.ts";
+} from '../../skylink/src/mod.ts';
+import { SkyDevice, SkyEntry } from "../../skylink/src/types.ts";
 
 export class Pollable implements SkyDevice<SkyEntry> {
   constructor() {}

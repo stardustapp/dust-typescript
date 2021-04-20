@@ -1,9 +1,7 @@
-import { Automaton, AutomatonRuntime } from "../client-automaton/builder.ts";
+import type { Automaton, AutomatonRuntime } from "../client-automaton/builder.ts";
+import { Environment, StringEntry, LiteralDevice, FunctionDevice, Entry } from '../skylink/src/mod.ts';
 
-import { Environment,FolderEntry,StringEntry,InflateSkylinkLiteral,LiteralDevice,FunctionDevice, Entry } from '../skylink/src/mod.ts';
-import { SkyEntry } from "../skylink/src/types.ts";
-
-import { LuaContext,LuaMachine,LuaThread } from './copied-from-dust-server/lua-machine.ts';
+import { LuaMachine, LuaThread } from './lib/lua-machine.ts';
 
 export class LuaRuntime implements AutomatonRuntime {
   status: string;
@@ -13,13 +11,7 @@ export class LuaRuntime implements AutomatonRuntime {
   machine?: LuaMachine;
   thread?: LuaThread;
 
-  // myScripts: ApiHandle;
-  // myRoutes: ApiHandle;
   constructor(automaton: Automaton<LuaRuntime>) {
-    // this.myScripts = automaton.getHandle(`/my-scripts`);
-    // this.myRoutes = automaton.getHandle(`/my-routes`);
-
-  // constructor(appId, userEnv) {
     this.status = 'Pending';
     // this.processes = new Array; // TODO: skylink api
     this.userEnv = automaton.userEnv;
