@@ -1,6 +1,6 @@
-import * as YAML from 'https://deno.land/std@0.83.0/encoding/yaml.ts';
-import * as clr from 'https://deno.land/std@0.83.0/fmt/colors.ts';
-import { join } from 'https://deno.land/std@0.83.0/path/mod.ts';
+import * as YAML from 'https://deno.land/std@0.95.0/encoding/yaml.ts';
+import * as clr from 'https://deno.land/std@0.95.0/fmt/colors.ts';
+import { join } from 'https://deno.land/std@0.95.0/path/mod.ts';
 
 import {ServiceRunner} from './runner.ts';
 

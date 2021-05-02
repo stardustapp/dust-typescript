@@ -1,8 +1,8 @@
-import * as clr from 'https://deno.land/std@0.83.0/fmt/colors.ts';
+import * as clr from 'https://deno.land/std@0.95.0/fmt/colors.ts';
 
-import { autoDetectClient, JSONObject } from "https://deno.land/x/kubernetes_client@v0.1.3/mod.ts";
-import { fromIngress } from "https://deno.land/x/kubernetes_apis@v0.2.0/builtin/networking.k8s.io@v1beta1/structs.ts";
-// import { Deployment } from "https://deno.land/x/kubernetes_apis@v0.2.0/builtin/apps@v1/structs.ts";
+import { autoDetectClient, JSONObject } from "https://deno.land/x/kubernetes_client@v0.2.3/mod.ts";
+import { fromIngress } from "https://deno.land/x/kubernetes_apis@v0.3.0/builtin/networking.k8s.io@v1beta1/structs.ts";
+// import { Deployment } from "https://deno.land/x/kubernetes_apis@v0.3.0/builtin/apps@v1/structs.ts";
 
 export function generateIngress({
   serviceName, annotations, domains,

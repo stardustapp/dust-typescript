@@ -1,4 +1,4 @@
-import { resolve } from 'https://deno.land/std@0.83.0/path/mod.ts';
+import { resolve } from 'https://deno.land/std@0.95.0/path/mod.ts';
 import { BlobEntry, Entry, FolderEntry } from "../api/entries/index.ts";
 import { SkyDevice, SkyEntry } from "../types.ts";
 

@@ -8,7 +8,7 @@ import { LuaRuntime } from "./app-runtime.ts";
 // --/irc-modem skylink+http://irc-modem
 // --/coinbase-api skylink+http://coinbase-api-client
 
-import { parse } from "https://deno.land/std@0.93.0/flags/mod.ts";
+import { parse } from "https://deno.land/std@0.95.0/flags/mod.ts";
 const args = parse(Deno.args, {
   boolean: 'default-mounts',
   default: { 'default-mounts': true },

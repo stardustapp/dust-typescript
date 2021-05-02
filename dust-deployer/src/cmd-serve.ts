@@ -1,6 +1,6 @@
-import * as flags from "https://deno.land/std@0.83.0/flags/mod.ts";
-import * as clr from 'https://deno.land/std@0.83.0/fmt/colors.ts';
-import { join } from 'https://deno.land/std@0.83.0/path/mod.ts';
+import * as flags from "https://deno.land/std@0.95.0/flags/mod.ts";
+import * as clr from 'https://deno.land/std@0.95.0/fmt/colors.ts';
+import { join } from 'https://deno.land/std@0.95.0/path/mod.ts';
 
 import { Loader } from './loader.ts';
 import { disregardSignals, ServiceRunner } from './runner.ts';
