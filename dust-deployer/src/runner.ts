@@ -179,7 +179,7 @@ export class ServiceRunner {
 
 import {
   ReadLineTransformer, readableStreamFromAsyncIterator,
-} from 'https://deno.land/x/kubernetes_client@v0.2.3/stream-transformers.ts';
+} from 'https://deno.land/x/kubernetes_client@v0.2.3/lib/stream-transformers.ts';
 
 class ChildProcess {
   proc: Deno.Process<Deno.RunOptions & {stdout: 'piped', stderr: 'piped'}>;
