@@ -1,4 +1,4 @@
-import * as Base64 from 'https://deno.land/x/base64@v0.2.1/mod.ts';
+import * as Base64 from 'https://deno.land/std@0.95.0/encoding/base64.ts';
 
 export class BlobEntry {
   Type = "Blob" as const;
@@ -10,12 +10,12 @@ export class BlobEntry {
 
   static fromString(raw: string, mime='text/plain') {
     const encodedBytes = new TextEncoder().encode(raw);
-    const dataString = Base64.fromUint8Array(encodedBytes);
+    const dataString = Base64.encode(encodedBytes);
     return new BlobEntry('blob', dataString, mime);
   }
 
   static fromBytes(rawBytes: Uint8Array, mime='text/plain') {
-    const dataString = Base64.fromUint8Array(rawBytes);
+    const dataString = Base64.encode(rawBytes);
     return new BlobEntry('blob', dataString, mime);
   }
 
@@ -26,7 +26,7 @@ export class BlobEntry {
   }
 
   asBytes(): Uint8Array {
-    return Base64.toUint8Array(this.Data);
+    return Base64.decode(this.Data);
   }
 
   inspect() {
