@@ -1,4 +1,4 @@
-import { Entry } from "../api/entries/index.ts";
+import { Entry, ErrorEntry, FolderEntry } from "../api/entries/index.ts";
 import { SkyDevice, SkyEntry } from "../types.ts";
 
 export class TempDevice implements SkyDevice<TempEntry> {
@@ -6,6 +6,7 @@ export class TempDevice implements SkyDevice<TempEntry> {
   entries = new Map<string,SkyEntry>();
 
   getEntry(path: string) {
+    if (path === '/') return new TempEntry(this, '');
     return new TempEntry(this, path);
   }
 }
@@ -15,10 +16,38 @@ export class TempEntry implements SkyEntry {
 
   async get() {
     const entry = this.mount.entries.get(this.path);
-    if (!entry) return null;
-    // if (entry.Type) return entry;
-    if (entry.get) return entry.get();
-    throw new Error(`get() called but wasn't a gettable thing`);
+    if (entry) {
+      // if (entry.Type) return entry;
+      if (entry.get) return entry.get();
+      throw new Error(`get() called but wasn't a gettable thing`);
+    }
+
+    const prefix = this.path ? `${this.path}/` : '/';
+    const matches = Array.from(this.mount.entries).filter(x => x[0].startsWith(prefix));
+    if (this.path == '' || matches.length > 0) {
+      const childDirs = new Set<string>();
+      const childEnts = new Map<string,SkyEntry>();
+      for (const match of matches) {
+        const name = match[0].slice(prefix.length);
+        if (name.includes('/')) {
+          childDirs.add(name.slice(0, name.indexOf('/')-1));
+        } else {
+          childEnts.set(name, match[1]);
+        }
+      }
+
+      const children = await Promise.all(Array
+        .from(childEnts)
+        .map(async x => x[1].get
+          ? (await x[1].get()
+            ?? new ErrorEntry(x[0], 'null-child', import.meta.url, `Child was null`))
+          : new ErrorEntry(x[0], 'no-get-method', import.meta.url, `Child isn't gettable`)));
+
+      return new FolderEntry('temp', children.concat(Array
+        .from(childDirs).map(x => new FolderEntry(x))));
+    }
+
+    return null;
   }
 
   async invoke(input: Entry) {
