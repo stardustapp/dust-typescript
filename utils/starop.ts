@@ -1,4 +1,5 @@
-import {EnumerationWriter, interpretUrl} from "../skylink/src/mod.ts";
+import {EnumerationWriter, InflateSkylinkLiteral, interpretUrl} from "../skylink/src/mod.ts";
+import {readAll} from "https://deno.land/std@0.95.0/io/util.ts";
 
 const [client, path] = interpretUrl(Deno.args[1] ?? '/');
 
@@ -91,5 +92,18 @@ switch (Deno.args[0]) {
       }
     }
     break;
+
+  case 'invoke': {
+    const output = await client.performOp({
+      Op: 'invoke',
+      Path: path,
+      Input: InflateSkylinkLiteral(JSON.parse(new TextDecoder().decode(await readAll(Deno.stdin)))),
+    });
+    switch (output?.Type) {
+      default:
+        console.log(output);
+    }
+    break;
+  }
 
 }
