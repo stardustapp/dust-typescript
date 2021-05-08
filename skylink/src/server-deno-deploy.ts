@@ -7,12 +7,17 @@ import { SkylinkServer } from "./server.ts";
  */
 export const PublicEnvironment = new Environment();
 
-addEventListener("fetch", async (event) => {
+// addEventListener("fetch",
+/**
+ * The listener that responds to requests.
+ * Register this when starting up: `addEventListener("fetch", FetchListener);`
+ */
+export async function FetchListener(event: Event) {
   const request = (event as any).request as Request;
   const response = await handleRequest(request).catch(renderError);
   response.headers.set("server", `Stardustapp-Typescript/0.1.0 Deno/${Deno.version}`);
   (event as any).respondWith(response);
-});
+};
 
 
 function renderError(err: Error) {
