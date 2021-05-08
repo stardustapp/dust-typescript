@@ -82,7 +82,7 @@ export type Invocable<TInput, TOutput> = {
   invoke(input: TInput): Promise<TOutput>;
 };
 
-export interface SkyDevice<T=SkyEntry> {
+export interface SkyDevice<T extends SkyEntry=SkyEntry> {
   getEntry(path: string): Promise<T | null> | T | null;
   ready?: Promise<unknown>;
 }

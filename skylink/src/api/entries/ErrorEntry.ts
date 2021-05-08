@@ -21,6 +21,6 @@ export class ErrorEntry {
   }
 
   inspect() {
-    return `<Error ${JSON.stringify(this.Name)} ${JSON.stringify(this.Code)} ${JSON.stringify(this.Authority)} ${JSON.stringify(this.StringValue)}>`;
+    return `<Error ${JSON.stringify(this.Name)} ${JSON.stringify(this.Code)}: ${JSON.stringify(this.StringValue)} from ${JSON.stringify(this.Authority)}>`;
   }
 }

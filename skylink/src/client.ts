@@ -21,7 +21,7 @@ export interface SkylinkClient {
   // Public API
 
   attach(extension: SkylinkExtension<SkylinkClient>): void;
-  handleShutdown(input: unknown): void;
+  handleShutdown(input: Entry | undefined): void;
 
   /**
    * Issues a request frame to the server and returns the result frame.
@@ -53,7 +53,7 @@ export class SkylinkClientBase implements SkylinkClient {
 
   outputDecoders = new Array<(output: WireResponse) => Entry | null>();
   frameProcessors = new Array<(frame: WireResponse) => boolean>();
-  shutdownHandlers = new Array<(input: unknown) => void>();
+  shutdownHandlers = new Array<(input: Entry | undefined) => void>();
   extraInflaters = new Map<string,(input: WireTypeUnknown) => Entry>();
   extraDeflaters = new Map<string,(input: Entry) => WireTypeUnknown>();
 
@@ -64,7 +64,7 @@ export class SkylinkClientBase implements SkylinkClient {
     extension.attachTo(this);
   }
 
-  handleShutdown(input: unknown) {
+  handleShutdown(input: Entry | undefined) {
     for (const handler of this.shutdownHandlers) {
       handler(input);
     }

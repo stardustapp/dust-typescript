@@ -1,3 +1,4 @@
+import { Entry } from "./api/entries/index.ts";
 import {SkylinkClient, SkylinkClientBase} from './client.ts';
 import {InlineChannelClient} from './extensions/channel-client.ts';
 import { SkyRequest, SkyResponse, WireRequest, WireResponse } from "./types.ts";
@@ -53,7 +54,7 @@ export class WebsocketSkylinkClient extends SkylinkClientBase implements Skylink
     }
   }
 
-  stop(input=null) {
+  stop(input?: Entry) {
     if (this.ws) {
       console.log('Shutting down Websocket transport')
       clearInterval(this.pingTimer);
