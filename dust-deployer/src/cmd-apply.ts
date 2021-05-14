@@ -1,7 +1,10 @@
-import * as YAML from 'https://deno.land/std@0.95.0/encoding/yaml.ts';
-import * as flags from "https://deno.land/std@0.95.0/flags/mod.ts";
-import * as clr from 'https://deno.land/std@0.95.0/fmt/colors.ts';
-import { join, dirname } from 'https://deno.land/std@0.95.0/path/mod.ts';
+import {
+  YAML,
+  flags,
+  clr,
+  pathJoin as join,
+  pathDirname,
+} from "../deps.ts";
 
 import { Loader } from './loader.ts';
 import { disregardSignals, ServiceRunner } from './runner.ts';
@@ -163,7 +166,7 @@ async function handler(argv: {
         const dirs = new Set('.');
         const matches = findCmd.stdout.match(pattern) || [];
         for (const path of matches) {
-          const dir = dirname(path);
+          const dir = pathDirname(path);
           if (dir && !dirs.has(dir)) {
             await runner.execUtility('mkdir', ['-p', join(destDir, dir)]);
             dirs.add(dir);

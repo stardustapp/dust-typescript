@@ -1,11 +1,13 @@
-import * as YAML from 'https://deno.land/std@0.95.0/encoding/yaml.ts';
-import * as clr from 'https://deno.land/std@0.95.0/fmt/colors.ts';
-import { join } from 'https://deno.land/std@0.95.0/path/mod.ts';
+import {
+  YAML,
+  clr,
+  pathJoin as join,
+} from "../deps.ts";
 
-import {ServiceRunner} from './runner.ts';
-
+import { ServiceRunner } from './runner.ts';
 import EnvPaths from "./env_paths.ts";
 import { DustDeployment, DustProject, ProjectApp } from "./dust-config.ts";
+
 const envPaths = EnvPaths
   ('dust-deployer', {suffix: ''});
 

@@ -1,9 +1,9 @@
-// from https://github.com/lemarier/deno-env-paths/blob/master/mod.ts
-
 import {
-  join as pathJoin,
-  basename as pathBasename,
-} from "https://deno.land/std@0.95.0/path/mod.ts";
+  pathJoin,
+  pathBasename,
+} from "../deps.ts";
+
+// from https://github.com/lemarier/deno-env-paths/blob/master/mod.ts
 
 const homedir: string | undefined = Deno.env.get('HOME');
 const tmpdir: string | undefined = Deno.env.get('TMPDIR');

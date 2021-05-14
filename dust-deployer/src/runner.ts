@@ -1,9 +1,10 @@
-import * as clr from 'https://deno.land/std@0.95.0/fmt/colors.ts';
-import { iter } from 'https://deno.land/std@0.95.0/io/util.ts';
 import {
-  readableStreamFromReader, readerFromIterable,
-} from 'https://deno.land/std@0.95.0/io/streams.ts';
-import { combine } from 'https://crux.land/7Ed9a6#combine-iterators@v1';
+  clr,
+  combine,
+  iter,
+  readableStreamFromReader,
+  readerFromIterable,
+} from "../deps.ts";
 
 const KnownDirs = new Array<[string,string]>();
 
