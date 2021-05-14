@@ -1,4 +1,9 @@
-import {EnumerationWriter, InflateSkylinkLiteral, interpretUrl} from "../skylink/src/mod.ts";
+import {
+  Entry,
+  EnumerationWriter,
+  InflateSkylinkLiteral,
+  interpretUrl,
+} from "../skylink/src/mod.ts";
 import {readAll} from "https://deno.land/std@0.95.0/io/util.ts";
 
 const [client, path] = interpretUrl(Deno.args[1] ?? '/');
@@ -94,16 +99,47 @@ switch (Deno.args[0]) {
     break;
 
   case 'invoke': {
+    const input = InflateSkylinkLiteral(JSON.parse(new TextDecoder().decode(await readAll(Deno.stdin))));
+    printFullEntry(input);
+    console.log('Invocation triggered...');
     const output = await client.performOp({
       Op: 'invoke',
       Path: path,
-      Input: InflateSkylinkLiteral(JSON.parse(new TextDecoder().decode(await readAll(Deno.stdin)))),
+      Input: input,
     });
-    switch (output?.Type) {
-      default:
-        console.log(output);
-    }
+    console.log('Result:');
+    printFullEntry(output);
     break;
   }
 
+}
+
+
+function printFullEntry(entry: Entry | undefined, indentStr = ' ') {
+  const prefix = indentStr.slice(0, -1);
+  if (!entry) {
+    console.log(prefix+'- ', '(missing entry)');
+    return;
+  }
+  switch (entry.Type) {
+
+    case 'Folder':
+      console.log(prefix+'+-.', entry.Name+'/');
+      const last = entry.Children.slice(-1)[0];
+      for (const child of entry.Children) {
+        printFullEntry(child, indentStr+(last == child ? '  ' : ' |'));
+      }
+      break;
+
+    case 'String':
+      console.log(prefix+'|- ', entry.Name, " \t:", JSON.stringify(entry.StringValue).slice(0, 80));
+      break;
+
+    case 'Function':
+      console.log(prefix+'|- ', entry.Name + '()');
+      break;
+
+    default:
+      console.log(prefix+'|- ', entry.Name, `(${entry.Type})`);
+  }
 }
