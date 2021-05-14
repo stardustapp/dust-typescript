@@ -1,4 +1,9 @@
 import * as clr from 'https://deno.land/std@0.95.0/fmt/colors.ts';
+import { iter } from 'https://deno.land/std@0.95.0/io/util.ts';
+import {
+  readableStreamFromReader, readerFromIterable,
+} from 'https://deno.land/std@0.95.0/io/streams.ts';
+import { combine } from 'https://crux.land/7Ed9a6#combine-iterators@v1';
 
 const KnownDirs = new Array<[string,string]>();
 
@@ -178,7 +183,7 @@ export class ServiceRunner {
 }
 
 import {
-  ReadLineTransformer, readableStreamFromAsyncIterator,
+  ReadLineTransformer,
 } from 'https://deno.land/x/kubernetes_client@v0.2.4/lib/stream-transformers.ts';
 
 class ChildProcess {
@@ -192,50 +197,16 @@ class ChildProcess {
     this.proc.kill(15); // SIGTERM
   }
   perLine() {
-    return readableStreamFromAsyncIterator(combine([
-      Deno.iter(this.proc.stderr, {bufSize: 1024}),
-      Deno.iter(this.proc.stdout, {bufSize: 1024}),
-    ]), this.cancel.bind(this))
-      .pipeThrough(new ReadLineTransformer('utf-8'));
+    const combined = readerFromIterable(combine([
+      iter(this.proc.stderr, {bufSize: 1024}),
+      iter(this.proc.stdout, {bufSize: 1024}),
+    ]));
+    return readableStreamFromReader({
+      read: combined.read.bind(combined),
+      close: this.cancel.bind(this),
+    }).pipeThrough(new ReadLineTransformer('utf-8'));
   }
   async stdout() {
     return new TextDecoder('utf-8').decode(await this.proc.output());
   }
-}
-
-
-// port of https://stackoverflow.com/a/50586391
-async function* combine<T>(iterable: Iterable<AsyncIterableIterator<T>>) {
-  const asyncIterators = Array.from(iterable, o => o[Symbol.asyncIterator]());
-  const results = [];
-  let count = asyncIterators.length;
-  let complete: ((val: {index:number,result:IteratorResult<T,any>}) => void) | undefined;
-  const never = new Promise<{index:number,result:IteratorResult<T,any>}>(ok => {complete = ok});
-  function getNext(asyncIterator: AsyncIterator<T>, index: number) {
-      return asyncIterator.next().then(result => ({
-          index,
-          result,
-      }));
-  }
-  const nextPromises = asyncIterators.map(getNext);
-  try {
-      while (count) {
-          const {index, result} = await Promise.race(nextPromises);
-          if (result.done) {
-              nextPromises[index] = never;
-              results[index] = result.value;
-              count--;
-          } else {
-              nextPromises[index] = getNext(asyncIterators[index], index);
-              yield result.value;
-          }
-      }
-  } finally {
-      for (const [index, iterator] of asyncIterators.entries())
-          if (nextPromises[index] != never && iterator.return != null)
-              iterator.return();
-      if (complete) complete({index: -1, result: {value: undefined, done: true}});
-      // no await here - see https://github.com/tc39/proposal-async-iteration/issues/126
-  }
-  return results;
 }
