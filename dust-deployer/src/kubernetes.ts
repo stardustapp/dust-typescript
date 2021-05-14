@@ -2,6 +2,10 @@ import {
   clr,
   JSONObject,
   fromIngress,
+  fromDeployment,
+  DeploymentSpec,
+  Container,
+  PodSpec,
 } from "../deps.ts";
 
 export function generateIngress({
@@ -11,10 +15,7 @@ export function generateIngress({
   annotations?: Record<string,string>;
   domains: Array<string>;
 }) {
-  // YAMLError: unacceptable kind of an object to dump [object Undefined]
-  return JSON.parse(JSON.stringify(fromIngress({
-    apiVersion: 'networking.k8s.io/v1beta1',
-    kind: 'Ingress',
+  return fromIngress({
     metadata: {
       name: `${serviceName}-fe`,
       annotations,
@@ -30,10 +31,10 @@ export function generateIngress({
           paths: [{
             path: '/',
             backend: {
-              serviceName: serviceName,
+              serviceName,
               servicePort: 'http',
             },
-            // in v1:
+            // Ingress v1 in Kubernetes 1.19:
             // backend: {
             //   service: {
             //     name: serviceName,
@@ -45,7 +46,7 @@ export function generateIngress({
           }]},
       })),
     },
-  }))) as JSONObject;
+  }) as JSONObject;
 }
 
 export function generateDeploymentPatch(name: string, {
@@ -53,13 +54,17 @@ export function generateDeploymentPatch(name: string, {
   pod={},
   containerName='app',
   container={},
-}): JSONObject {
-  return {
-    apiVersion: 'apps/v1',
-    kind: 'Deployment',
+}: {
+  deployment?: Partial<DeploymentSpec>,
+  pod?: Partial<PodSpec>,
+  containerName?: string,
+  container?: Partial<Container>,
+}) {
+  return fromDeployment({
     metadata: { name },
     spec: {
       ...deployment,
+      selector: {},
       template: { spec: {
         ...pod,
         containers: [{
@@ -68,7 +73,7 @@ export function generateDeploymentPatch(name: string, {
         }],
       }},
     },
-  };
+  }) as JSONObject;
 }
 
 export class KubernetesClient {

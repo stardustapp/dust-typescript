@@ -243,7 +243,7 @@ async function handler(argv: {
       serviceName: 'api',
       annotations: kubernetes.ingressAnnotations,
       domains: domain ? [domain] : [],
-    })));
+    }), { skipInvalid: true }));
 
     const {
       project_id, database_url, admin_uids,
@@ -260,7 +260,7 @@ async function handler(argv: {
           { name: 'FIREBASE_ADMIN_UIDS', value: (admin_uids||[]).join(',') },
           { name: 'SKYLINK_ALLOWED_ORIGINS', value: allowed_origins.join(',') },
         ],
-      }})));
+      }}), { skipInvalid: true }));
 
     await writeFile(join(targetDir, 'kustomization.yaml'), YAML.stringify({
       commonLabels: kubernetes.labels,
