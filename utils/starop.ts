@@ -36,26 +36,10 @@ switch (Deno.args[0]) {
       Path: path,
       Depth: parseInt(Deno.args[2] || '4'),
     });
-    if (listing?.Type !== 'Folder') {
-      console.log(listing);
-      break;
-    }
-    console.log('Contents of', Deno.args[1] ?? '/', ':');
-    for (const item of listing.Children) {
-      switch (item.Type) {
-        case 'Folder':
-          console.log(' ', item.Name + '/');
-          break;
-        case 'String':
-          console.log(' ', item.Name, "\t\t:", JSON.stringify(item.StringValue));
-          break;
-        case 'Function':
-          console.log(' ', item.Name + '()');
-          break;
-        default:
-          console.log(' ', item.Name, `(${item.Type})`);
-          break;
-      }
+    if (listing) {
+      printFullEntry(listing);
+    } else {
+      console.log('No result from enumeration');
     }
     break;
   }
@@ -74,29 +58,9 @@ switch (Deno.args[0]) {
     enumer.visitEnumeration(listing);
 
     const output = enumer.reconstruct();
-    if (output.Type !== 'Folder') {
-      console.log(output);
-      break;
-    }
-
-    console.log('Contents of', Deno.args[1] ?? '/', ':');
-    for (const item of output.Children) {
-      switch (item.Type) {
-        case 'Folder':
-          console.log(' ', item.Name + '/');
-          break;
-        case 'String':
-          console.log(' ', item.Name);
-          break;
-        case 'Function':
-          console.log(' ', item.Name + '()');
-          break;
-        default:
-          console.log(' ', item.Name, `(${item.Type})`);
-          break;
-      }
-    }
-    break;
+    output.Name = path;
+    printFullEntry(output);
+  } break;
 
   case 'invoke': {
     const input = InflateSkylinkLiteral(JSON.parse(new TextDecoder().decode(await readAll(Deno.stdin))));
@@ -129,10 +93,15 @@ function printFullEntry(entry: Entry | undefined, indentStr = ' ') {
       for (const child of entry.Children) {
         printFullEntry(child, indentStr+(last == child ? '  ' : ' |'));
       }
+      if (last) console.log(indentStr);
       break;
 
     case 'String':
       console.log(prefix+'|- ', entry.Name, " \t:", JSON.stringify(entry.StringValue).slice(0, 80));
+      break;
+
+    case 'Blob':
+      console.log(prefix+'|- ', entry.Name, ` \t${entry.Mime} | ${entry.Data.length} B`);
       break;
 
     case 'Function':
