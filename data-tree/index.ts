@@ -1,4 +1,3 @@
-import * as Elements from './elements/_index.ts';
-export {Elements};
-export {Compiler} from './compiler.ts';
-export {SchemaLoader} from './loader.ts';
+export * as Elements from './elements/_index.ts';
+export { Compiler, exportNode } from './compiler.ts';
+export * from './types.ts';
