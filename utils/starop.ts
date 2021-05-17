@@ -30,7 +30,7 @@ switch (Deno.args[0]) {
     break;
   }
 
-  case 'tree': {
+  case 'enum': {
     const listing = await client.performOp({
       Op: 'enumerate',
       Path: path,
@@ -41,14 +41,14 @@ switch (Deno.args[0]) {
     } else {
       console.log('No result from enumeration');
     }
-    break;
-  }
+  } break;
 
-  case 'ls':
+  case 'tree':
+  case 'ls': {
     const listing = await client.performOp({
       Op: 'enumerate',
       Path: path,
-      Depth: 1,
+      Depth: parseInt(Deno.args[2] || (Deno.args[0] == 'tree' ? '4' : '1')),
     });
     if (listing?.Type !== 'Folder') {
       console.log(listing);
