@@ -193,6 +193,9 @@ class ChildProcess {
   constructor(proc: Deno.Process<Deno.RunOptions & {stdout: 'piped', stderr: 'piped'}>) {
     this.proc = proc;
     this.status = proc.status();
+    this.status.then(x => {
+      console.log('   ', 'child', proc.pid, 'exited with', x.code);
+    })
   }
   cancel() {
     this.proc.kill(15); // SIGTERM
