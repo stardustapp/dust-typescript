@@ -3,6 +3,7 @@ import {DeviceEntry} from './DeviceEntry.ts';
 import {FolderEntry} from './FolderEntry.ts';
 import {StringEntry} from './StringEntry.ts';
 import {ErrorEntry} from './ErrorEntry.ts';
+import {FunctionEntry} from './FunctionEntry.ts';
 import { WireType, WireTypeUnknown } from "../../types.ts";
 import { Entry } from "./index.ts";
 
@@ -30,10 +31,9 @@ export function InflateSkylinkLiteral(raw: WireType, extraInflaters?: Map<string
     case 'Error':
       return new ErrorEntry(raw.Name ?? '', raw.Code ?? '', raw.Authority ?? '', raw.StringValue ?? '');
 
-    // TODO: proper class (maybe even with a callable?)
-    // case 'Function':
-    //   return raw;
-      // return new FunctionEntry(raw.Name || '');
+    case 'Function':
+      // is there a way to make this invocable or assign basic structure info?
+      return new FunctionEntry(raw.Name || '');
 
     // case 'JS':
     //   return raw.Data;

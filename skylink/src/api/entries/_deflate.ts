@@ -41,11 +41,11 @@ export function DeflateToSkylinkLiteral(entry: Entry, extraDeflaters?: Map<strin
         StringValue: `${entry.StringValue || ''}`,
       };
 
-    // case 'Function':
-    //   return {
-    //     Type: 'Function',
-    //     Name: entry.Name || '',
-    //   };
+    case 'Function':
+      return {
+        Type: 'Function',
+        Name: entry.Name || '',
+      };
 
       // case 'JS':
       //   return entry.Data;
