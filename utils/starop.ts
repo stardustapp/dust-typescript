@@ -79,36 +79,44 @@ switch (Deno.args[0]) {
 }
 
 
-function printFullEntry(entry: Entry | undefined, indentStr = ' ') {
-  const prefix = indentStr.slice(0, -1);
+function printFullEntry(entry: Entry | undefined, indentStr1 = '', indentStr2 = '') {
   if (!entry) {
-    console.log(prefix+'- ', '(missing entry)');
+    console.log(indentStr1, '(missing entry)');
     return;
   }
   switch (entry.Type) {
 
     case 'Folder':
-      console.log(prefix+'+-.', entry.Name+'/');
+      console.log(indentStr1 + entry.Name+'/');
       const last = entry.Children.slice(-1)[0];
       for (const child of entry.Children) {
-        printFullEntry(child, indentStr+(last == child ? '  ' : ' |'));
+        printFullEntry(child,
+          indentStr2+(last == child ? '└── ' : '├── '),
+          indentStr2+(last == child ? '    ' : '│   '),
+        );
       }
-      if (last) console.log(indentStr);
       break;
 
     case 'String':
-      console.log(prefix+'|- ', entry.Name, " \t:", JSON.stringify(entry.StringValue).slice(0, 80));
+      console.log(indentStr1 + entry.Name, " \t:", JSON.stringify(entry.StringValue).slice(0, 80));
+      break;
+
+    case 'Error':
+      console.log(indentStr1 + entry.Name, "(Error)");
+      if (entry.Code) console.log(indentStr2+'│', `error code:`, JSON.stringify(entry.Code));
+      console.log(indentStr2+'│', `error message:`, JSON.stringify(entry.StringValue).slice(0, 80));
+      if (entry.Authority) console.log(indentStr2+'│', `authority:`, JSON.stringify(entry.Authority));
       break;
 
     case 'Blob':
-      console.log(prefix+'|- ', entry.Name, ` \t${entry.Mime} | ${entry.Data.length} B`);
+      console.log(indentStr1 + entry.Name, ` \t${entry.Mime} | ${entry.Data.length} B`);
       break;
 
     case 'Function':
-      console.log(prefix+'|- ', entry.Name + '()');
+      console.log(indentStr1 + entry.Name + '()');
       break;
 
     default:
-      console.log(prefix+'|- ', entry.Name, `(${entry.Type})`);
+      console.log(indentStr1 + entry.Name, `(${entry.Type})`);
   }
 }
