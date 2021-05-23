@@ -1,3 +1,4 @@
+#!/usr/bin/env -S deno run --allow-read --allow-env --allow-net
 import { AutomatonBuilder } from "../client-automaton/builder.ts";
 import { LuaRuntime } from "./app-runtime.ts";
 
