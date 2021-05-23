@@ -60,7 +60,12 @@ export class LuaRuntime implements AutomatonRuntime {
       this.thread.compileFrom(literal);
     // }
 
-    await this.thread.run(input);
+    this.status = 'Running';
+    try {
+      await this.thread.run(input);
+    } finally {
+      this.status = 'Terminated';
+    }
   }
 
   async getStateEntry(path: string) {
