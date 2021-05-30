@@ -58,7 +58,6 @@ export class TempEntry implements SkyEntry {
   }
 
   async put(value: Entry) {
-    console.log('putting', this.path, value);
     this.mount.entries.set(this.path, {
       get: () => Promise.resolve(value),
     });
