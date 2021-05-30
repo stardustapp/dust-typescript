@@ -2,6 +2,7 @@ import {
   Entry,
   EnumerationWriter,
   InflateSkylinkLiteral,
+  DeflateToSkylinkLiteral,
   interpretUrl,
 } from "../skylink/src/mod.ts";
 import {readAll} from "https://deno.land/std@0.95.0/io/util.ts";
@@ -24,8 +25,11 @@ switch (Deno.args[0]) {
           await Deno.stdout.write(entry.asBytes());
         }
         break;
+      case 'String':
+        console.log(entry.StringValue || '');
+        break;
       default:
-        console.log(entry);
+        console.log(JSON.stringify(DeflateToSkylinkLiteral(entry!)));
     }
     break;
   }
