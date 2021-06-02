@@ -1,4 +1,4 @@
-FROM hayd/alpine-deno:1.10.2
+FROM denoland/deno:alpine-1.10.3
 WORKDIR /src
 
 ADD . ./
